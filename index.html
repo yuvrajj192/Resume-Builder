@@ -664,11 +664,11 @@
           summary: document.getElementById('summary').value,
           photo: document.getElementById('photoPreview').src,
         },
-        experience: window.resumeData?.experience || [],
-        education: window.resumeData?.education || [],
-        projects: window.resumeData?.projects || [],
-        skills: window.resumeData?.skills || [],
-        certifications: window.resumeData?.certifications || [],
+        experience: data.experience || [],
+        education: data.education || [],
+        projects: data.projects || [],
+        skills: skills || [],
+        certifications: data.certifications || [],
       };
     }
 function loadResumeData(resume) {
