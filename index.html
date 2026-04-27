@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ResumeForge – Build Your Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo">Resume<span>Forge</span></div>
+    <div class="header-actions">
+      <div class="template-tabs">
+        <button class="tab-btn active" onclick="setTemplate('classic')">Classic</button>
+        <button class="tab-btn" onclick="setTemplate('modern')">Modern</button>
+        <button class="tab-btn" onclick="setTemplate('minimal')">Minimal</button>
+      </div>
+      <button class="download-btn" onclick="downloadPDF()">⬇ Download PDF</button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN APP ===== -->
+  <div class="app">
+
+    <!-- FORM PANEL -->
+    <div class="form-panel">
+
+      <!-- Photo Upload -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">📷</span> Profile Photo</div>
+        <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+          <img id="photoPreview" class="photo-preview" src="" alt="Photo"/>
+          <div class="photo-placeholder" id="photoPlaceholder">🧑</div>
+          <div class="photo-text">
+            <strong>Upload your photo</strong>
+            Click to browse or drag & drop
+          </div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
+      </div>
+
+      <!-- Personal Information -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">👤</span> Personal Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="firstName" placeholder="John" oninput="update()"/>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="lastName" placeholder="Doe" oninput="update()"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Job Title / Role</label>
+          <input type="text" id="jobTitle" placeholder="Software Engineer" oninput="update()"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="john@email.com" oninput="update()"/>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="phone" placeholder="+91 9876543210" oninput="update()"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="location" placeholder="Mumbai, India" oninput="update()"/>
+          </div>
+          <div class="form-group">
+            <label>LinkedIn / Website</label>
+            <input type="text" id="linkedin" placeholder="linkedin.com/in/johndoe" oninput="update()"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Professional Summary</label>
+          <textarea id="summary" placeholder="Write a brief summary about yourself..." oninput="update()"></textarea>
+        </div>
+      </div>
+
+      <!-- Work Experience -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">💼</span> Work Experience</div>
+        <div id="experience-list"></div>
+        <button class="add-btn" onclick="addEntry('experience')">+ Add Experience</button>
+      </div>
+
+      <!-- Education -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">🎓</span> Education</div>
+        <div id="education-list"></div>
+        <button class="add-btn" onclick="addEntry('education')">+ Add Education</button>
+      </div>
+
+      <!-- Projects -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">🚀</span> Projects</div>
+        <div id="projects-list"></div>
+        <button class="add-btn" onclick="addEntry('projects')">+ Add Project</button>
+      </div>
+
+      <!-- Skills -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">⚡</span> Skills</div>
+        <div class="skills-container" id="skills-list"></div>
+        <div class="skill-input-row">
+          <input type="text" id="skillInput" placeholder="e.g. JavaScript" onkeydown="if(event.key==='Enter') addSkill()"/>
+          <button onclick="addSkill()">Add</button>
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">🏆</span> Certifications</div>
+        <div id="certifications-list"></div>
+        <button class="add-btn" onclick="addEntry('certifications')">+ Add Certification</button>
+      </div>
+
+    </div>
+    <!-- END FORM PANEL -->
+
+    <!-- PREVIEW PANEL -->
+    <div class="preview-panel">
+      <div class="resume classic" id="resumePreview">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+    </div>
+
+  </div>
+  <!-- END APP -->
+
+  <script src="js/script.js"></script>
+</body>
+</html>

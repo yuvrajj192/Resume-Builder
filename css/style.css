@@ -1,0 +1,645 @@
+/* ============================================
+   ResumeForge - style.css
+   Stylesheet for Resume Builder Web App
+   ============================================ */
+
+/* ---- CSS Variables (Theme) ---- */
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --accent: #1a1a2e;
+  --accent2: #c8a96e;
+  --text: #1a1a2e;
+  --muted: #8a8a9a;
+  --border: #e2ddd6;
+  --input-bg: #faf9f7;
+  --shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+  --radius: 12px;
+}
+
+/* ---- Reset & Base ---- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+header {
+  background: var(--accent);
+  color: white;
+  padding: 18px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--accent2);
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ---- Template Tabs ---- */
+.template-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab-btn {
+  padding: 7px 18px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---- Download Button ---- */
+.download-btn {
+  padding: 10px 22px;
+  background: var(--accent2);
+  color: var(--accent);
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.download-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.4);
+}
+
+/* ============================================
+   MAIN LAYOUT
+   ============================================ */
+.app {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  height: calc(100vh - 65px);
+}
+
+/* ============================================
+   FORM PANEL
+   ============================================ */
+.form-panel {
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 28px 28px 60px;
+}
+
+.form-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.form-panel::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+/* ---- Section Title ---- */
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title .icon {
+  font-size: 1rem;
+}
+
+.form-section {
+  margin-bottom: 28px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Form Rows & Groups ---- */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.15);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+/* ---- Photo Upload ---- */
+.photo-upload {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.photo-upload:hover {
+  border-color: var(--accent2);
+}
+
+.photo-preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent2);
+  display: none;
+}
+
+.photo-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+.photo-text {
+  font-size: 0.83rem;
+  color: var(--muted);
+}
+
+.photo-text strong {
+  display: block;
+  color: var(--text);
+  font-size: 0.88rem;
+  margin-bottom: 2px;
+}
+
+/* ---- Entry Cards (Experience, Education etc.) ---- */
+.entry-card {
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #e00055;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px dashed var(--accent2);
+  border-radius: 8px;
+  background: rgba(200, 169, 110, 0.07);
+  color: var(--accent2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-btn:hover {
+  background: rgba(200, 169, 110, 0.15);
+}
+
+/* ---- Skills ---- */
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.skill-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--accent);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.skill-chip button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.skill-chip button:hover {
+  color: white;
+}
+
+.skill-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.skill-input-row input {
+  flex: 1;
+}
+
+.skill-input-row button {
+  padding: 10px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+}
+
+.skill-input-row button:hover {
+  background: #2d2d4e;
+}
+
+/* ============================================
+   PREVIEW PANEL
+   ============================================ */
+.preview-panel {
+  overflow-y: auto;
+  background: #e8e4dc;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 30px;
+}
+
+.preview-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.preview-panel::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* ============================================
+   RESUME BASE
+   ============================================ */
+.resume {
+  width: 794px;
+  min-height: 1123px;
+  background: white;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1a1a2e;
+  transform-origin: top center;
+}
+
+/* ============================================
+   TEMPLATE 1: CLASSIC
+   ============================================ */
+.resume.classic .r-header {
+  background: #1a1a2e;
+  color: white;
+  padding: 36px 48px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.resume.classic .r-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent2);
+  flex-shrink: 0;
+}
+
+.resume.classic .r-photo-placeholder {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.resume.classic .r-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.resume.classic .r-role {
+  color: var(--accent2);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.resume.classic .r-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.resume.classic .r-body {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+}
+
+.resume.classic .r-main { padding: 32px 36px; }
+.resume.classic .r-sidebar {
+  background: #f7f5f0;
+  padding: 32px 24px;
+  border-left: 1px solid #e2ddd6;
+}
+
+.resume.classic .r-section { margin-bottom: 26px; }
+
+.resume.classic .r-section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: #1a1a2e;
+  border-bottom: 2px solid var(--accent2);
+  padding-bottom: 4px;
+  margin-bottom: 14px;
+}
+
+.resume.classic .r-sidebar .r-section-title { font-size: 0.9rem; }
+
+.resume.classic .r-entry { margin-bottom: 16px; }
+
+.resume.classic .r-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.resume.classic .r-entry-title  { font-weight: 700; font-size: 0.9rem; }
+.resume.classic .r-entry-subtitle { color: #555; font-size: 0.82rem; }
+.resume.classic .r-entry-date { font-size: 0.75rem; color: var(--accent2); font-weight: 600; white-space: nowrap; }
+.resume.classic .r-entry-desc { font-size: 0.8rem; color: #444; margin-top: 5px; line-height: 1.5; }
+
+.resume.classic .skill-bar-item { margin-bottom: 10px; }
+.resume.classic .skill-bar-label { font-size: 0.78rem; margin-bottom: 4px; font-weight: 500; }
+.resume.classic .skill-bar { height: 4px; background: #e2ddd6; border-radius: 4px; }
+.resume.classic .skill-bar-fill { height: 100%; background: #1a1a2e; border-radius: 4px; }
+.resume.classic .r-summary { font-size: 0.83rem; color: #444; line-height: 1.6; }
+
+/* ============================================
+   TEMPLATE 2: MODERN
+   ============================================ */
+.resume.modern .r-header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d5e 100%);
+  color: white;
+  padding: 40px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.resume.modern .r-header::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(200, 169, 110, 0.15);
+}
+
+.resume.modern .r-header-inner {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.resume.modern .r-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 3px solid var(--accent2);
+}
+
+.resume.modern .r-photo-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+}
+
+.resume.modern .r-name { font-family: 'DM Serif Display', serif; font-size: 2.2rem; margin-bottom: 4px; }
+.resume.modern .r-role { color: var(--accent2); font-size: 1rem; font-weight: 500; margin-bottom: 12px; }
+.resume.modern .r-contact { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.78rem; color: rgba(255,255,255,0.8); }
+
+.resume.modern .r-body { padding: 36px 48px; }
+.resume.modern .r-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.resume.modern .r-section { margin-bottom: 28px; }
+
+.resume.modern .r-section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+  color: #1a1a2e;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent2);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resume.modern .r-entry { margin-bottom: 16px; padding-left: 12px; border-left: 3px solid #e2ddd6; }
+.resume.modern .r-entry-title  { font-weight: 700; font-size: 0.88rem; }
+.resume.modern .r-entry-subtitle { color: #666; font-size: 0.8rem; }
+.resume.modern .r-entry-date { font-size: 0.73rem; color: var(--accent2); font-weight: 600; margin: 2px 0; }
+.resume.modern .r-entry-desc { font-size: 0.79rem; color: #444; line-height: 1.5; margin-top: 4px; }
+.resume.modern .skill-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.resume.modern .skill-chip-r { padding: 3px 10px; background: #1a1a2e; color: white; border-radius: 20px; font-size: 0.73rem; font-weight: 500; }
+.resume.modern .r-summary { font-size: 0.82rem; color: #444; line-height: 1.6; }
+
+/* ============================================
+   TEMPLATE 3: MINIMAL
+   ============================================ */
+.resume.minimal { padding: 56px 60px; }
+
+.resume.minimal .r-header {
+  text-align: left;
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #1a1a2e;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.resume.minimal .r-photo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.resume.minimal .r-photo-placeholder { width: 80px; height: 80px; border-radius: 50%; background: #f7f5f0; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+.resume.minimal .r-name { font-family: 'DM Serif Display', serif; font-size: 2.4rem; color: #1a1a2e; letter-spacing: -1px; }
+.resume.minimal .r-role { font-size: 0.9rem; color: #888; font-weight: 400; margin: 4px 0 10px; }
+.resume.minimal .r-contact { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.78rem; color: #666; }
+
+.resume.minimal .r-body { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+.resume.minimal .r-section { margin-bottom: 26px; }
+
+.resume.minimal .r-section-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #888;
+  margin-bottom: 14px;
+}
+
+.resume.minimal .r-entry { margin-bottom: 16px; }
+.resume.minimal .r-entry-title  { font-weight: 700; font-size: 0.88rem; }
+.resume.minimal .r-entry-subtitle { color: #666; font-size: 0.82rem; }
+.resume.minimal .r-entry-date { font-size: 0.73rem; color: #aaa; margin: 2px 0; }
+.resume.minimal .r-entry-desc { font-size: 0.79rem; color: #555; line-height: 1.5; margin-top: 4px; }
+.resume.minimal .skill-list { display: flex; flex-direction: column; gap: 6px; }
+.resume.minimal .skill-item { font-size: 0.8rem; color: #333; padding: 4px 0; border-bottom: 1px dotted #e2ddd6; }
+.resume.minimal .r-summary { font-size: 0.82rem; color: #555; line-height: 1.6; }
+
+/* ============================================
+   RESPONSIVE SCALING
+   ============================================ */
+@media (max-width: 1400px) {
+  .resume { transform: scale(0.75); margin: -14% auto; }
+  .app { grid-template-columns: 390px 1fr; }
+}
+
+@media (max-width: 1200px) {
+  .resume { transform: scale(0.6); margin: -22% auto; }
+}
+
+/* ============================================
+   PRINT / PDF
+   ============================================ */
+@media print {
+  .resume { transform: none !important; box-shadow: none; }
+}
