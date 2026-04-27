@@ -213,7 +213,7 @@ Use this checklist to ensure complete setup:
 
 ## 🔑 Key Concepts
 
-### Authentication
+  Authentication
 - Users create accounts with email/password
 - Supabase handles security (password hashing, etc.)
 - Sessions maintained automatically
