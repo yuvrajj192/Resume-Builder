@@ -539,14 +539,33 @@ function downloadPDF() {
   };
 
   html2pdf()
-    .set(options)
-    .from(resume)
-    .save()
-    .then(() => {
-      // Restore transform after PDF is saved
-      resume.style.transform = '';
-      resume.style.margin = '';
-    });
+  .set(options)
+  .from(resume)
+  .save()
+  .then(async () => {
+    // Restore UI
+    resume.style.transform = '';
+    resume.style.margin = '';
+
+    try {
+      // Convert resume to blob
+      const pdfBlob = await html2pdf().from(resume).outputPdf('blob');
+
+      // Get resume data
+      const resumeData = getResumeData();
+
+      // Save to history
+      await StorageManager.saveToHistory(
+        resumeData,
+        pdfBlob,
+        currentTemplate
+      );
+
+      console.log("✅ Saved to history");
+    } catch (err) {
+      console.error("❌ History save failed:", err);
+    }
+  });
 }
 
 // ============================================

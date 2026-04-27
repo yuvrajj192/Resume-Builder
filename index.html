@@ -141,6 +141,7 @@
         <button class="tab-btn" onclick="setTemplate('minimal')">Minimal</button>
       </div>
       <button class="download-btn" onclick="downloadPDF()">⬇ Download PDF</button>
+      <button class="download-btn" onclick="markAsComplete()">✅ Complete Resume</button>
       <button class="save-draft-btn" onclick="openSaveDraftModal()">💾 Save Draft</button>
       <button class="history-btn" onclick="openHistoryModal()">📋 History</button>
       <button class="logout-btn" onclick="logout()">🚪 Logout</button>
@@ -290,6 +291,23 @@
   <script src="js/script.js"></script>
   
   <script>
+
+    async function markAsComplete() {
+  try {
+    const resumeData = getResumeData();
+
+    await StorageManager.saveToHistory(
+      resumeData,
+      null, // no PDF for now
+      currentTemplate
+    );
+
+    alert("✅ Resume marked as completed!");
+  } catch (error) {
+    alert("❌ Error: " + error.message);
+  }
+}
+
     async function logout() {
       if (confirm('Are you sure you want to logout?')) {
         await AuthManager.logout();
