@@ -7,8 +7,129 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .save-draft-btn {
+      padding: 10px 22px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .save-draft-btn:hover {
+      background: #45a049;
+    }
+    .history-btn {
+      padding: 10px 22px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .history-btn:hover {
+      background: #0b7dda;
+    }
+    .logout-btn {
+      padding: 10px 22px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: #da190b;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #000;
+    }
+    .draft-item {
+      background: #f7f5f0;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #c8a96e;
+    }
+    .draft-item h4 {
+      margin: 0 0 8px 0;
+      color: #1a1a2e;
+    }
+    .draft-item p {
+      margin: 0 0 12px 0;
+      color: #8a8a9a;
+      font-size: 0.9rem;
+    }
+    .draft-item button {
+      padding: 8px 15px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .load-draft-btn {
+      background: #2196F3;
+      color: white;
+    }
+    .delete-draft-btn {
+      background: #f44336;
+      color: white;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
-<body>
+<body data-require-auth="true">
 
   <!-- ===== HEADER ===== -->
   <header>
@@ -20,6 +141,9 @@
         <button class="tab-btn" onclick="setTemplate('minimal')">Minimal</button>
       </div>
       <button class="download-btn" onclick="downloadPDF()">⬇ Download PDF</button>
+      <button class="save-draft-btn" onclick="openSaveDraftModal()">💾 Save Draft</button>
+      <button class="history-btn" onclick="openHistoryModal()">📋 History</button>
+      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
     </div>
   </header>
 
@@ -137,6 +261,320 @@
   </div>
   <!-- END APP -->
 
+  <!-- Save Draft Modal -->
+  <div id="saveDraftModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeSaveDraftModal()">&times;</span>
+      <h2>Save Draft</h2>
+      <div style="margin: 20px 0;">
+        <label for="draftName">Draft Name (optional):</label>
+        <input type="text" id="draftName" placeholder="My Resume Draft" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+        <button onclick="saveDraft()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeHistoryModal()">&times;</span>
+      <h2>Resume History & Drafts</h2>
+      <div id="historyContent" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/storage.js"></script>
   <script src="js/script.js"></script>
+  
+  <script>
+    async function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        await AuthManager.logout();
+      }
+    }
+
+    function openSaveDraftModal() {
+      document.getElementById('saveDraftModal').style.display = 'block';
+    }
+
+    function closeSaveDraftModal() {
+      document.getElementById('saveDraftModal').style.display = 'none';
+      document.getElementById('draftName').value = '';
+    }
+
+    async function saveDraft() {
+      const draftName = document.getElementById('draftName').value || null;
+      const resumeData = getResumeData();
+
+      try {
+        await StorageManager.saveDraft(resumeData, draftName);
+        alert('✅ Draft saved successfully!');
+        closeSaveDraftModal();
+      } catch (error) {
+        alert('❌ Error saving draft: ' + error.message);
+      }
+    }
+
+    function openHistoryModal() {
+      document.getElementById('historyModal').style.display = 'block';
+      loadHistory();
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').style.display = 'none';
+    }
+
+    async function loadHistory() {
+      try {
+        const drafts = await StorageManager.getDrafts();
+        const history = await StorageManager.getHistory();
+
+        let content = '<h3>Saved Drafts</h3>';
+        if (drafts.length === 0) {
+          content += '<p style="color: #8a8a9a;">No saved drafts yet.</p>';
+        } else {
+          drafts.forEach((draft) => {
+            const date = new Date(draft.updated_at).toLocaleString();
+            content += `
+              <div class="draft-item">
+                <h4>${draft.name}</h4>
+                <p>Last updated: ${date}</p>
+                <div class="action-buttons">
+                  <button class="load-draft-btn" onclick="loadDraft('${draft.id}')">Load</button>
+                  <button class="delete-draft-btn" onclick="deleteDraft('${draft.id}')">Delete</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        content += '<hr style="margin: 30px 0;"><h3>Resume History</h3>';
+        if (history.length === 0) {
+          content += '<p style="color: #8a8a9a;">No completed resumes yet.</p>';
+        } else {
+          history.forEach((item) => {
+            const date = new Date(item.created_at).toLocaleString();
+            content += `
+              <div class="draft-item">
+                <h4>${item.name} (${item.template})</h4>
+                <p>Created: ${date}</p>
+                <div class="action-buttons">
+                  <button class="load-draft-btn" onclick="loadHistoryItem('${item.id}')">Load</button>
+                  ${item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" style="padding: 8px 15px; background: #FF9800; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Download PDF</a>` : ''}
+                  <button class="delete-draft-btn" onclick="deleteHistory('${item.id}')">Delete</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        document.getElementById('historyContent').innerHTML = content;
+      } catch (error) {
+        alert('Error loading history: ' + error.message);
+      }
+    }
+
+    async function loadDraft(draftId) {
+      try {
+        const draft = await StorageManager.getDraft(draftId);
+        if (draft) {
+          loadResumeData(draft.content);
+          closeHistoryModal();
+          alert('✅ Draft loaded!');
+        }
+      } catch (error) {
+        alert('Error loading draft: ' + error.message);
+      }
+    }
+
+    async function deleteDraft(draftId) {
+      if (confirm('Are you sure you want to delete this draft?')) {
+        try {
+          await StorageManager.deleteDraft(draftId);
+          loadHistory();
+          alert('✅ Draft deleted!');
+        } catch (error) {
+          alert('Error deleting draft: ' + error.message);
+        }
+      }
+    }
+
+    async function loadHistoryItem(historyId) {
+      try {
+        const items = await StorageManager.getHistory();
+        const item = items.find(h => h.id === historyId);
+        if (item) {
+          loadResumeData(item.content);
+          setTemplate(item.template);
+          closeHistoryModal();
+          alert('✅ History item loaded!');
+        }
+      } catch (error) {
+        alert('Error loading history item: ' + error.message);
+      }
+    }
+
+    async function deleteHistory(historyId) {
+      if (confirm('Are you sure you want to delete this resume from history?')) {
+        try {
+          await StorageManager.deleteHistory(historyId);
+          loadHistory();
+          alert('✅ History entry deleted!');
+        } catch (error) {
+          alert('Error deleting history: ' + error.message);
+        }
+      }
+    }
+
+    function getResumeData() {
+      return {
+        personal: {
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          jobTitle: document.getElementById('jobTitle').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          location: document.getElementById('location').value,
+          linkedin: document.getElementById('linkedin').value,
+          summary: document.getElementById('summary').value,
+          photo: document.getElementById('photoPreview').src,
+        },
+        experience: window.resumeData?.experience || [],
+        education: window.resumeData?.education || [],
+        projects: window.resumeData?.projects || [],
+        skills: window.resumeData?.skills || [],
+        certifications: window.resumeData?.certifications || [],
+      };
+    }
+function loadResumeData(resume) {
+  if (!resume) return;
+
+  // -------- RESET STATE FIRST --------
+  data.experience = [];
+  data.education = [];
+  data.projects = [];
+  data.certifications = [];
+  skills = [];
+
+  // -------- CLEAR UI --------
+  document.getElementById('experience-list').innerHTML = '';
+  document.getElementById('education-list').innerHTML = '';
+  document.getElementById('projects-list').innerHTML = '';
+  document.getElementById('certifications-list').innerHTML = '';
+  document.getElementById('skills-list').innerHTML = '';
+
+  // -------- RESET COUNTERS --------
+  counters = {
+    experience: 0,
+    education: 0,
+    projects: 0,
+    certifications: 0
+  };
+
+  // -------- LOAD PERSONAL --------
+  document.getElementById('firstName').value = resume.personal?.firstName || '';
+  document.getElementById('lastName').value = resume.personal?.lastName || '';
+  document.getElementById('jobTitle').value = resume.personal?.jobTitle || '';
+  document.getElementById('email').value = resume.personal?.email || '';
+  document.getElementById('phone').value = resume.personal?.phone || '';
+  document.getElementById('location').value = resume.personal?.location || '';
+  document.getElementById('linkedin').value = resume.personal?.linkedin || '';
+  document.getElementById('summary').value = resume.personal?.summary || '';
+
+  // -------- PHOTO --------
+  if (resume.personal?.photo) {
+    document.getElementById('photoPreview').src = resume.personal.photo;
+    document.getElementById('photoPlaceholder').style.display = 'none';
+    document.getElementById('photoPreview').style.display = 'block';
+  }
+
+  // -------- LOAD EXPERIENCE --------
+  (resume.experience || []).forEach(exp => {
+    addEntry('experience');
+
+    const last = data.experience[data.experience.length - 1];
+    Object.assign(last, exp);
+
+    const card = document.getElementById(`card_${last.id}`);
+    const inputs = card.querySelectorAll('input, textarea');
+
+    if (inputs[0]) inputs[0].value = exp.title || '';
+    if (inputs[1]) inputs[1].value = exp.subtitle || '';
+    if (inputs[2]) inputs[2].value = exp.start || '';
+    if (inputs[3]) inputs[3].value = exp.end || '';
+    if (inputs[4]) inputs[4].value = exp.desc || '';
+  });
+
+  // -------- LOAD EDUCATION --------
+  (resume.education || []).forEach(edu => {
+    addEntry('education');
+
+    const last = data.education[data.education.length - 1];
+    Object.assign(last, edu);
+
+    const card = document.getElementById(`card_${last.id}`);
+    const inputs = card.querySelectorAll('input');
+
+    if (inputs[0]) inputs[0].value = edu.title || '';
+    if (inputs[1]) inputs[1].value = edu.subtitle || '';
+    if (inputs[2]) inputs[2].value = edu.start || '';
+    if (inputs[3]) inputs[3].value = edu.end || '';
+    if (inputs[4]) inputs[4].value = edu.desc || '';
+  });
+
+  // -------- LOAD PROJECTS --------
+  (resume.projects || []).forEach(proj => {
+    addEntry('projects');
+
+    const last = data.projects[data.projects.length - 1];
+    Object.assign(last, proj);
+
+    const card = document.getElementById(`card_${last.id}`);
+    const inputs = card.querySelectorAll('input, textarea');
+
+    if (inputs[0]) inputs[0].value = proj.title || '';
+    if (inputs[1]) inputs[1].value = proj.subtitle || '';
+    if (inputs[2]) inputs[2].value = proj.start || '';
+    if (inputs[3]) inputs[3].value = proj.desc || '';
+  });
+
+  // -------- LOAD CERTIFICATIONS --------
+  (resume.certifications || []).forEach(cert => {
+    addEntry('certifications');
+
+    const last = data.certifications[data.certifications.length - 1];
+    Object.assign(last, cert);
+
+    const card = document.getElementById(`card_${last.id}`);
+    const inputs = card.querySelectorAll('input');
+
+    if (inputs[0]) inputs[0].value = cert.title || '';
+    if (inputs[1]) inputs[1].value = cert.subtitle || '';
+    if (inputs[2]) inputs[2].value = cert.start || '';
+  });
+
+  // -------- LOAD SKILLS --------
+  skills = resume.skills || [];
+  renderSkillChips();
+
+  // -------- FINAL UPDATE --------
+  update();
+}
+
+    window.addEventListener('click', (event) => {
+      const saveDraftModal = document.getElementById('saveDraftModal');
+      const historyModal = document.getElementById('historyModal');
+      
+      if (event.target === saveDraftModal) {
+        closeSaveDraftModal();
+      }
+      if (event.target === historyModal) {
+        closeHistoryModal();
+      }
+    });
+  </script>
 </body>
 </html>

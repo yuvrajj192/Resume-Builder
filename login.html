@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - ResumeForge</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a1a2e;
+    }
+
+    .auth-container {
+      background: white;
+      border-radius: 20px;
+      padding: 50px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .auth-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: #1a1a2e;
+    }
+
+    .auth-header h1 span {
+      color: #c8a96e;
+    }
+
+    .auth-header p {
+      color: #8a8a9a;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #1a1a2e;
+      font-size: 0.9rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1.5px solid #e2ddd6;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      background: #faf9f7;
+      color: #1a1a2e;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #c8a96e;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.1);
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #c8a96e 0%, #b89458 100%);
+      color: #1a1a2e;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(200, 169, 110, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #8a8a9a;
+    }
+
+    .auth-link a {
+      color: #c8a96e;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: #8a8a9a;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 30px;
+      }
+
+      .auth-header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1>Resume<span>Forge</span></h1>
+      <p>Welcome back! Please login to continue</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" required />
+        <div class="error-message" id="emailError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required />
+        <div class="error-message" id="passwordError"></div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Login</button>
+      <div class="loading" id="loading">Logging in...</div>
+    </form>
+
+    <div class="auth-link">
+      Don't have an account? <a href="signup.html">Sign up here</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      let hasError = false;
+
+      if (!email) {
+        showError('emailError', 'Email is required');
+        hasError = true;
+      }
+
+      if (!password) {
+        showError('passwordError', 'Password is required');
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('loading').style.display = 'block';
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          showError('emailError', error.message || 'Login failed. Please check your credentials.');
+          throw error;
+        }
+
+        window.location.href = 'index.html';
+      } catch (err) {
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('loading').style.display = 'none';
+      }
+    });
+
+    function showError(elementId, message) {
+      document.getElementById(elementId).textContent = message;
+      document.getElementById(elementId).style.display = 'block';
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.error-message').forEach((el) => {
+        el.style.display = 'none';
+        el.textContent = '';
+      });
+    }
+  </script>
+</body>
+</html>
