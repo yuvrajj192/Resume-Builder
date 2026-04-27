@@ -715,20 +715,24 @@ function loadResumeData(resume) {
 
   // -------- LOAD EXPERIENCE --------
   (resume.experience || []).forEach(exp => {
-    addEntry('experience');
+  addEntry('experience');
 
-    const last = data.experience[data.experience.length - 1];
-    Object.assign(last, exp);
+  const last = data.experience[data.experience.length - 1];
 
-    const card = document.getElementById(`card_${last.id}`);
-    const inputs = card.querySelectorAll('input, textarea');
+  // ❗ REMOVE OLD ID (CRITICAL FIX)
+  const { id, ...rest } = exp;
 
-    if (inputs[0]) inputs[0].value = exp.title || '';
-    if (inputs[1]) inputs[1].value = exp.subtitle || '';
-    if (inputs[2]) inputs[2].value = exp.start || '';
-    if (inputs[3]) inputs[3].value = exp.end || '';
-    if (inputs[4]) inputs[4].value = exp.desc || '';
-  });
+  Object.assign(last, rest);
+
+  const card = document.getElementById(`card_${last.id}`);
+  const inputs = card.querySelectorAll('input, textarea');
+
+  if (inputs[0]) inputs[0].value = rest.title || '';
+  if (inputs[1]) inputs[1].value = rest.subtitle || '';
+  if (inputs[2]) inputs[2].value = rest.start || '';
+  if (inputs[3]) inputs[3].value = rest.end || '';
+  if (inputs[4]) inputs[4].value = rest.desc || '';
+});
 
   // -------- LOAD EDUCATION --------
   (resume.education || []).forEach(edu => {
