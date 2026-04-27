@@ -127,6 +127,205 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+
+    /* ===== MOBILE PANEL TOGGLE ===== */
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      background: #c8a96e;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 22px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      transition: all 0.2s;
+    }
+    .mobile-toggle:hover {
+      background: #b5933a;
+      transform: scale(1.05);
+    }
+
+    /* ===== RESPONSIVE BREAKPOINTS ===== */
+
+    /* Tablet: 641px – 1024px */
+    @media (max-width: 1024px) {
+      header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 16px;
+      }
+      .header-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .template-tabs {
+        order: -1;
+        width: 100%;
+      }
+      .download-btn,
+      .save-draft-btn,
+      .history-btn,
+      .logout-btn {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+      }
+      .app {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding: 16px;
+      }
+    }
+
+    /* Mobile: ≤ 640px */
+    @media (max-width: 640px) {
+      /* --- HEADER --- */
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 14px;
+        gap: 8px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-size: 1.3rem !important;
+      }
+      .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .template-tabs {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 6px;
+      }
+      .template-tabs::-webkit-scrollbar { display: none; }
+      .tab-btn {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 6px 14px !important;
+        font-size: 0.8rem !important;
+      }
+      .download-btn,
+      .save-draft-btn,
+      .history-btn,
+      .logout-btn {
+        padding: 7px 12px;
+        font-size: 0.78rem;
+        border-radius: 6px;
+        flex: 1 1 calc(50% - 6px);
+        text-align: center;
+      }
+
+      /* --- APP LAYOUT: stacked panels --- */
+      .app {
+        display: flex !important;
+        flex-direction: column;
+        padding: 12px;
+        gap: 0;
+      }
+      .form-panel,
+      .preview-panel {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      /* Hide preview by default on mobile; toggled via JS */
+      .preview-panel {
+        display: none;
+      }
+      .preview-panel.mobile-visible {
+        display: block;
+      }
+      .form-panel.mobile-hidden {
+        display: none;
+      }
+
+      /* --- FORM SECTIONS --- */
+      .form-row {
+        flex-direction: column !important;
+        gap: 10px;
+      }
+      .form-group {
+        width: 100% !important;
+      }
+      .photo-upload {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+      }
+      .section-title {
+        font-size: 1rem !important;
+      }
+
+      /* --- RESUME PREVIEW --- */
+      #resumePreview {
+        transform: scale(0.55);
+        transform-origin: top left;
+        width: 182% !important;
+        margin-bottom: -45% !important;
+      }
+
+      /* --- SKILL INPUT ROW --- */
+      .skill-input-row {
+        flex-direction: column !important;
+        gap: 8px;
+      }
+      .skill-input-row input,
+      .skill-input-row button {
+        width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      /* --- MODALS --- */
+      .modal-content {
+        width: 94% !important;
+        margin: 5% auto !important;
+        padding: 20px !important;
+        max-height: 90vh !important;
+      }
+
+      /* --- MOBILE TOGGLE BUTTON --- */
+      .mobile-toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* --- DRAFT ITEM BUTTONS --- */
+      .draft-item button,
+      .draft-item a {
+        flex: 1 1 calc(50% - 5px);
+        text-align: center;
+      }
+    }
+
+    /* Very small phones */
+    @media (max-width: 375px) {
+      .download-btn,
+      .save-draft-btn,
+      .history-btn,
+      .logout-btn {
+        flex: 1 1 100%;
+      }
+      #resumePreview {
+        transform: scale(0.48);
+        width: 208% !important;
+        margin-bottom: -52% !important;
+      }
+    }
   </style>
 </head>
 <body data-require-auth="true">
@@ -261,6 +460,11 @@
 
   </div>
   <!-- END APP -->
+
+  <!-- Mobile Panel Toggle Button -->
+  <button class="mobile-toggle" id="mobilePanelToggle" onclick="toggleMobilePanel()">
+    👁 Preview
+  </button>
 
   <!-- Save Draft Modal -->
   <div id="saveDraftModal" class="modal">
@@ -593,6 +797,25 @@ function loadResumeData(resume) {
         closeHistoryModal();
       }
     });
+
+    /* ===== MOBILE PANEL TOGGLE ===== */
+    let showingPreview = false;
+    function toggleMobilePanel() {
+      showingPreview = !showingPreview;
+      const form = document.querySelector('.form-panel');
+      const preview = document.querySelector('.preview-panel');
+      const btn = document.getElementById('mobilePanelToggle');
+
+      if (showingPreview) {
+        form.classList.add('mobile-hidden');
+        preview.classList.add('mobile-visible');
+        btn.textContent = '✏️ Edit';
+      } else {
+        form.classList.remove('mobile-hidden');
+        preview.classList.remove('mobile-visible');
+        btn.textContent = '👁 Preview';
+      }
+    }
   </script>
 </body>
 </html>
