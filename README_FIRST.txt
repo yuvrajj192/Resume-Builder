@@ -68,38 +68,7 @@ NEW FEATURES ADDED
   - Encrypted communication
   - Secure password handling
 
-========================================================================
-HOW TO GET STARTED (3 SIMPLE STEPS)
-========================================================================
 
-STEP 1: CREATE DATABASE TABLES (5 minutes)
-────────────────────────────────
-1. Go to: https://app.supabase.com
-2. Open: SQL Editor
-3. Copy: All text from SUPABASE_SETUP.sql
-4. Paste: Into SQL Editor
-5. Run: Execute the query
-✓ Creates: resume_drafts and resume_history tables
-✓ Creates: Security policies
-
-STEP 2: CREATE STORAGE BUCKET (3 minutes)
-──────────────────────────────
-1. Go to: Storage section
-2. Create: New bucket
-3. Name: resume-pdfs
-4. Setting: Uncheck "Public bucket"
-5. Create: The bucket
-✓ Ready: For PDF storage
-
-STEP 3: ADD SECURITY POLICIES (2 minutes)
-──────────────────────────
-1. Go to: SQL Editor
-2. Run: Storage policy SQL (see QUICK_START.md)
-✓ Allows: Users to upload/download their PDFs
-
-TOTAL TIME: ~10 minutes
-
-Then test everything (5 minutes) and you're done!
 
 ========================================================================
 WHAT HAPPENS WHEN USERS USE YOUR APP
