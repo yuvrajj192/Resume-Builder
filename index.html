@@ -448,6 +448,13 @@
         <button class="add-btn" onclick="addEntry('certifications')">+ Add Certification</button>
       </div>
 
+      <!-- Extra Curriculars -->
+      <div class="form-section">
+        <div class="section-title"><span class="icon">🎯</span> Extra Curriculars</div>
+        <div id="extracurriculars-list"></div>
+        <button class="add-btn" onclick="addEntry('extracurriculars')">+ Add Activity</button>
+      </div>
+
     </div>
     <!-- END FORM PANEL -->
 
@@ -497,20 +504,20 @@
   <script>
 
     async function markAsComplete() {
-  try {
-    const resumeData = getResumeData();
+      try {
+        const resumeData = getResumeData();
 
-    await StorageManager.saveToHistory(
-      resumeData,
-      null, // no PDF for now
-      currentTemplate
-    );
+        await StorageManager.saveToHistory(
+          resumeData,
+          null,
+          currentTemplate
+        );
 
-    alert("✅ Resume marked as completed!");
-  } catch (error) {
-    alert("❌ Error: " + error.message);
-  }
-}
+        alert("✅ Resume marked as completed!");
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
+    }
 
     async function logout() {
       if (confirm('Are you sure you want to logout?')) {
@@ -669,122 +676,144 @@
         projects: data.projects || [],
         skills: skills || [],
         certifications: data.certifications || [],
+        extracurriculars: data.extracurriculars || [],
       };
     }
-function loadResumeData(resume) {
-  if (!resume) return;
 
-  // -------- RESET STATE FIRST --------
-  data.experience = [];
-  data.education = [];
-  data.projects = [];
-  data.certifications = [];
-  skills = [];
+    function loadResumeData(resume) {
+      if (!resume) return;
 
-  // -------- CLEAR UI --------
-  document.getElementById('experience-list').innerHTML = '';
-  document.getElementById('education-list').innerHTML = '';
-  document.getElementById('projects-list').innerHTML = '';
-  document.getElementById('certifications-list').innerHTML = '';
-  document.getElementById('skills-list').innerHTML = '';
+      // -------- RESET STATE FIRST --------
+      data.experience = [];
+      data.education = [];
+      data.projects = [];
+      data.certifications = [];
+      data.extracurriculars = [];
+      skills = [];
 
-  // -------- RESET COUNTERS --------
-  counters = {
-    experience: 0,
-    education: 0,
-    projects: 0,
-    certifications: 0
-  };
+      // -------- CLEAR UI --------
+      document.getElementById('experience-list').innerHTML = '';
+      document.getElementById('education-list').innerHTML = '';
+      document.getElementById('projects-list').innerHTML = '';
+      document.getElementById('certifications-list').innerHTML = '';
+      document.getElementById('extracurriculars-list').innerHTML = '';
+      document.getElementById('skills-list').innerHTML = '';
 
-  // -------- LOAD PERSONAL --------
-  document.getElementById('firstName').value = resume.personal?.firstName || '';
-  document.getElementById('lastName').value = resume.personal?.lastName || '';
-  document.getElementById('jobTitle').value = resume.personal?.jobTitle || '';
-  document.getElementById('email').value = resume.personal?.email || '';
-  document.getElementById('phone').value = resume.personal?.phone || '';
-  document.getElementById('location').value = resume.personal?.location || '';
-  document.getElementById('linkedin').value = resume.personal?.linkedin || '';
-  document.getElementById('summary').value = resume.personal?.summary || '';
+      // -------- RESET COUNTERS --------
+      counters = {
+        experience: 0,
+        education: 0,
+        projects: 0,
+        certifications: 0,
+        extracurriculars: 0
+      };
 
-  // -------- PHOTO --------
-  if (resume.personal?.photo) {
-    document.getElementById('photoPreview').src = resume.personal.photo;
-    document.getElementById('photoPlaceholder').style.display = 'none';
-    document.getElementById('photoPreview').style.display = 'block';
-  }
+      // -------- LOAD PERSONAL --------
+      document.getElementById('firstName').value = resume.personal?.firstName || '';
+      document.getElementById('lastName').value = resume.personal?.lastName || '';
+      document.getElementById('jobTitle').value = resume.personal?.jobTitle || '';
+      document.getElementById('email').value = resume.personal?.email || '';
+      document.getElementById('phone').value = resume.personal?.phone || '';
+      document.getElementById('location').value = resume.personal?.location || '';
+      document.getElementById('linkedin').value = resume.personal?.linkedin || '';
+      document.getElementById('summary').value = resume.personal?.summary || '';
 
-  // -------- LOAD EXPERIENCE --------
-  (resume.experience || []).forEach(exp => {
-    addEntry('experience');
+      // -------- PHOTO --------
+      if (resume.personal?.photo) {
+        document.getElementById('photoPreview').src = resume.personal.photo;
+        document.getElementById('photoPlaceholder').style.display = 'none';
+        document.getElementById('photoPreview').style.display = 'block';
+      }
 
-    const last = data.experience[data.experience.length - 1];
-    Object.assign(last, exp);
+      // -------- LOAD EXPERIENCE --------
+      (resume.experience || []).forEach(exp => {
+        addEntry('experience');
 
-    const card = document.getElementById(`card_${last.id}`);
-    const inputs = card.querySelectorAll('input, textarea');
+        const last = data.experience[data.experience.length - 1];
+        Object.assign(last, exp);
 
-    if (inputs[0]) inputs[0].value = exp.title || '';
-    if (inputs[1]) inputs[1].value = exp.subtitle || '';
-    if (inputs[2]) inputs[2].value = exp.start || '';
-    if (inputs[3]) inputs[3].value = exp.end || '';
-    if (inputs[4]) inputs[4].value = exp.desc || '';
-  });
+        const card = document.getElementById(`card_${last.id}`);
+        const inputs = card.querySelectorAll('input, textarea');
 
-  // -------- LOAD EDUCATION --------
-  (resume.education || []).forEach(edu => {
-    addEntry('education');
+        if (inputs[0]) inputs[0].value = exp.title || '';
+        if (inputs[1]) inputs[1].value = exp.subtitle || '';
+        if (inputs[2]) inputs[2].value = exp.start || '';
+        if (inputs[3]) inputs[3].value = exp.end || '';
+        if (inputs[4]) inputs[4].value = exp.desc || '';
+      });
 
-    const last = data.education[data.education.length - 1];
-    Object.assign(last, edu);
+      // -------- LOAD EDUCATION --------
+      (resume.education || []).forEach(edu => {
+        addEntry('education');
 
-    const card = document.getElementById(`card_${last.id}`);
-    const inputs = card.querySelectorAll('input');
+        const last = data.education[data.education.length - 1];
+        Object.assign(last, edu);
 
-    if (inputs[0]) inputs[0].value = edu.title || '';
-    if (inputs[1]) inputs[1].value = edu.subtitle || '';
-    if (inputs[2]) inputs[2].value = edu.start || '';
-    if (inputs[3]) inputs[3].value = edu.end || '';
-    if (inputs[4]) inputs[4].value = edu.desc || '';
-  });
+        const card = document.getElementById(`card_${last.id}`);
+        const inputs = card.querySelectorAll('input');
 
-  // -------- LOAD PROJECTS --------
-  (resume.projects || []).forEach(proj => {
-    addEntry('projects');
+        if (inputs[0]) inputs[0].value = edu.title || '';
+        if (inputs[1]) inputs[1].value = edu.subtitle || '';
+        if (inputs[2]) inputs[2].value = edu.start || '';
+        if (inputs[3]) inputs[3].value = edu.end || '';
+        if (inputs[4]) inputs[4].value = edu.desc || '';
+      });
 
-    const last = data.projects[data.projects.length - 1];
-    Object.assign(last, proj);
+      // -------- LOAD PROJECTS --------
+      (resume.projects || []).forEach(proj => {
+        addEntry('projects');
 
-    const card = document.getElementById(`card_${last.id}`);
-    const inputs = card.querySelectorAll('input, textarea');
+        const last = data.projects[data.projects.length - 1];
+        Object.assign(last, proj);
 
-    if (inputs[0]) inputs[0].value = proj.title || '';
-    if (inputs[1]) inputs[1].value = proj.subtitle || '';
-    if (inputs[2]) inputs[2].value = proj.start || '';
-    if (inputs[3]) inputs[3].value = proj.desc || '';
-  });
+        const card = document.getElementById(`card_${last.id}`);
+        const inputs = card.querySelectorAll('input, textarea');
 
-  // -------- LOAD CERTIFICATIONS --------
-  (resume.certifications || []).forEach(cert => {
-    addEntry('certifications');
+        if (inputs[0]) inputs[0].value = proj.title || '';
+        if (inputs[1]) inputs[1].value = proj.subtitle || '';
+        if (inputs[2]) inputs[2].value = proj.start || '';
+        if (inputs[3]) inputs[3].value = proj.desc || '';
+      });
 
-    const last = data.certifications[data.certifications.length - 1];
-    Object.assign(last, cert);
+      // -------- LOAD CERTIFICATIONS --------
+      (resume.certifications || []).forEach(cert => {
+        addEntry('certifications');
 
-    const card = document.getElementById(`card_${last.id}`);
-    const inputs = card.querySelectorAll('input');
+        const last = data.certifications[data.certifications.length - 1];
+        Object.assign(last, cert);
 
-    if (inputs[0]) inputs[0].value = cert.title || '';
-    if (inputs[1]) inputs[1].value = cert.subtitle || '';
-    if (inputs[2]) inputs[2].value = cert.start || '';
-  });
+        const card = document.getElementById(`card_${last.id}`);
+        const inputs = card.querySelectorAll('input');
 
-  // -------- LOAD SKILLS --------
-  skills = resume.skills || [];
-  renderSkillChips();
+        if (inputs[0]) inputs[0].value = cert.title || '';
+        if (inputs[1]) inputs[1].value = cert.subtitle || '';
+        if (inputs[2]) inputs[2].value = cert.start || '';
+      });
 
-  // -------- FINAL UPDATE --------
-  update();
-}
+      // -------- LOAD EXTRA CURRICULARS --------
+      (resume.extracurriculars || []).forEach(extra => {
+        addEntry('extracurriculars');
+
+        const last = data.extracurriculars[data.extracurriculars.length - 1];
+        Object.assign(last, extra);
+
+        const card = document.getElementById(`card_${last.id}`);
+        const inputs = card.querySelectorAll('input, textarea');
+
+        if (inputs[0]) inputs[0].value = extra.title || '';
+        if (inputs[1]) inputs[1].value = extra.subtitle || '';
+        if (inputs[2]) inputs[2].value = extra.start || '';
+        if (inputs[3]) inputs[3].value = extra.end || '';
+        if (inputs[4]) inputs[4].value = extra.desc || '';
+      });
+
+      // -------- LOAD SKILLS --------
+      skills = resume.skills || [];
+      renderSkillChips();
+
+      // -------- FINAL UPDATE --------
+      update();
+    }
 
     window.addEventListener('click', (event) => {
       const saveDraftModal = document.getElementById('saveDraftModal');

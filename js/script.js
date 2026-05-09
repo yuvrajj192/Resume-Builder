@@ -11,13 +11,15 @@ let data = {
   experience: [],
   education: [],
   projects: [],
-  certifications: []
+  certifications: [],
+  extracurriculars: []
 };
 let counters = {
   experience: 0,
   education: 0,
   projects: 0,
-  certifications: 0
+  certifications: 0,
+  extracurriculars: 0
 };
 
 // ============================================
@@ -198,6 +200,35 @@ function addEntry(type) {
     `;
   }
 
+  else if (type === 'extracurriculars') {
+    fields = `
+      <div class="form-row">
+        <div class="form-group">
+          <label>Activity / Role</label>
+          <input type="text" placeholder="Club President" oninput="updateEntry('${id}', 'title', this.value)"/>
+        </div>
+        <div class="form-group">
+          <label>Organization</label>
+          <input type="text" placeholder="Coding Club, IIT Bombay" oninput="updateEntry('${id}', 'subtitle', this.value)"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="text" placeholder="Aug 2022" oninput="updateEntry('${id}', 'start', this.value)"/>
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="text" placeholder="May 2024" oninput="updateEntry('${id}', 'end', this.value)"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea placeholder="What did you do, achieve, or contribute?" oninput="updateEntry('${id}', 'desc', this.value)"></textarea>
+      </div>
+    `;
+  }
+
   card.innerHTML = `
     <button class="remove-btn" onclick="removeEntry('${type}', '${id}')">✕</button>
     ${fields}
@@ -336,6 +367,19 @@ function update() {
       </div>
     `).join('');
 
+    const extraHTML = renderEntries('extracurriculars').map(e => `
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <div>
+            <div class="r-entry-title">${e.title || ''}</div>
+            <div class="r-entry-subtitle">${e.subtitle || ''}</div>
+          </div>
+          <div class="r-entry-date">${e.dateStr}</div>
+        </div>
+        ${e.desc ? `<div class="r-entry-desc">${e.desc}</div>` : ''}
+      </div>
+    `).join('');
+
     const skillBarsHTML = skills.map((s, i) => `
       <div class="skill-bar-item">
         <div class="skill-bar-label">${s}</div>
@@ -359,6 +403,7 @@ function update() {
           ${summary ? `<div class="r-section"><div class="r-section-title">Summary</div><div class="r-summary">${summary}</div></div>` : ''}
           ${expHTML  ? `<div class="r-section"><div class="r-section-title">Work Experience</div>${expHTML}</div>` : ''}
           ${projHTML ? `<div class="r-section"><div class="r-section-title">Projects</div>${projHTML}</div>` : ''}
+          ${extraHTML ? `<div class="r-section"><div class="r-section-title">Extra Curriculars</div>${extraHTML}</div>` : ''}
         </div>
         <div class="r-sidebar">
           ${eduHTML      ? `<div class="r-section"><div class="r-section-title">Education</div>${eduHTML}</div>` : ''}
@@ -408,6 +453,15 @@ function update() {
       </div>
     `).join('');
 
+    const extraHTML = renderEntries('extracurriculars').map(e => `
+      <div class="r-entry">
+        <div class="r-entry-title">${e.title || ''}</div>
+        <div class="r-entry-date">${e.dateStr}</div>
+        <div class="r-entry-subtitle">${e.subtitle || ''}</div>
+        ${e.desc ? `<div class="r-entry-desc">${e.desc}</div>` : ''}
+      </div>
+    `).join('');
+
     const skillChipsHTML = `
       <div class="skill-chips">
         ${skills.map(s => `<span class="skill-chip-r">${s}</span>`).join('')}
@@ -431,6 +485,7 @@ function update() {
           <div>
             ${expHTML  ? `<div class="r-section"><div class="r-section-title">💼 Experience</div>${expHTML}</div>` : ''}
             ${projHTML ? `<div class="r-section"><div class="r-section-title">🚀 Projects</div>${projHTML}</div>` : ''}
+            ${extraHTML ? `<div class="r-section"><div class="r-section-title">🎯 Extra Curriculars</div>${extraHTML}</div>` : ''}
           </div>
           <div>
             ${eduHTML      ? `<div class="r-section"><div class="r-section-title">🎓 Education</div>${eduHTML}</div>` : ''}
@@ -481,6 +536,15 @@ function update() {
       </div>
     `).join('');
 
+    const extraHTML = renderEntries('extracurriculars').map(e => `
+      <div class="r-entry">
+        <div class="r-entry-title">${e.title || ''}</div>
+        <div class="r-entry-subtitle">${e.subtitle || ''}</div>
+        <div class="r-entry-date">${e.dateStr}</div>
+        ${e.desc ? `<div class="r-entry-desc">${e.desc}</div>` : ''}
+      </div>
+    `).join('');
+
     const skillListHTML = `
       <div class="skill-list">
         ${skills.map(s => `<div class="skill-item">${s}</div>`).join('')}
@@ -501,6 +565,7 @@ function update() {
           ${summary ? `<div class="r-section"><div class="r-section-title">About</div><div class="r-summary">${summary}</div></div>` : ''}
           ${expHTML  ? `<div class="r-section"><div class="r-section-title">Experience</div>${expHTML}</div>` : ''}
           ${projHTML ? `<div class="r-section"><div class="r-section-title">Projects</div>${projHTML}</div>` : ''}
+          ${extraHTML ? `<div class="r-section"><div class="r-section-title">Extra Curriculars</div>${extraHTML}</div>` : ''}
         </div>
         <div class="r-right">
           ${eduHTML      ? `<div class="r-section"><div class="r-section-title">Education</div>${eduHTML}</div>` : ''}
