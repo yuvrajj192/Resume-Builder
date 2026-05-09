@@ -643,3 +643,15 @@ header {
 @media print {
   .resume { transform: none !important; box-shadow: none; }
 }
+
+/* ============================================
+   TEXT WRAPPING & JUSTIFYING
+   ============================================ */
+.r-entry-desc,
+.r-summary {
+  text-align: justify;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+ 
+}
